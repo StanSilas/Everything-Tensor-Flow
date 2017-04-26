@@ -1,0 +1,35 @@
+import tensorflow as tf
+
+#Addition
+
+Matrix_one = tf.constant([[1,2,3],[2,3,4],[3,4,5]])
+Matrix_two = tf.constant([[2,2,2],[3,3,3],[4,4,4]])
+
+first_operation = tf.add(Matrix_one, Matrix_two)
+second_operation = Matrix_one + Matrix_two
+
+with tf.Session() as session:
+    result = session.run(first_operation)
+    print "Defined using tensorflow function :"
+    print(result)
+    result = session.run(second_operation)
+    print "Defined using normal expressions :"
+    print(result)
+    
+    
+Observe that both of them will give you same results.
+
+
+#Multiplication :
+#For multiplying tensors in tensorflow, we need to use tf.matmul()
+
+Matrix_one = tf.constant([[2,3],[3,4]])
+Matrix_two = tf.constant([[2,3],[3,4]])
+
+first_operation = tf.matmul(Matrix_one, Matrix_two)
+
+with tf.Session() as session:
+    result = session.run(first_operation)
+    print "Defined using tensorflow function :"
+    print(result)
+    
