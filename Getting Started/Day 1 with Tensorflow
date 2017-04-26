@@ -1,6 +1,95 @@
 First Install TensorFlow and all dependencies. 
 Then comeback to follow along!
 
+The first thing to be clear about is that, this 'tensor' has nothing to do with the 'tensor' from Physics, (mostly!).
+Just remember, that tensor in the context of tensorflow is nothing but a way to represent a Multi Dimensional Array.
+
+1-D = a scalar, with just one axes
+2-D = an X-Y plane, so two axes , vector
+3-D = Volume, so 3 axes , length, breadth, height, matrix
+Everything higher = can't be visualized easily, so think of it as an array/matrix with n rows and n columns and 'n' something else. This is 
+where tensors come in.
+
+___________________________________________________________
+Open a Jupyter Notebook and start typing away :
+
+
+import tensorflow as tf
+
+#To create our first graph we will utilize source operations, which do not need any information input. These source operations or 
+#source ops will pass their information to other operations which will execute computations.
+#To create two source operations which will output numbers just define two constants:
+
+a = tf.constant([2])
+b = tf.constant([3])
+
+#After that, let's make an operation over these variables. The function tf.add() adds two elements (you could also use c = a + b).
+
+c = tf.add(a,b)
+
+#This does nothing, to actually get results, you need to create a session and start it. What a session does is create a context 
+#for the graph to run inside tensorflow.
+
+session = tf.Session()
+
+#Let's run the session to get the result from the previous defined 'c' operation:
+
+result = session.run(c)
+print(result)
+
+#Now make sure to close the session to release resources:
+
+session.close()
+
+#A smarter way to do this would be :
+
+with tf.Session() as session:
+    result = session.run(c)
+    print(result)
+__________________________________________________________________________________
+Representing 1D 2D 3D and N-D :
+
+Scalar = tf.constant([2])
+Vector = tf.constant([5,6,2])
+Matrix = tf.constant([[1,2,3],[2,3,4],[3,4,5]])
+Tensor = tf.constant( [ [[1,2,3],[2,3,4],[3,4,5]] , [[4,5,6],[5,6,7],[6,7,8]] , [[7,8,9],[8,9,10],[9,10,11]] ] )
+
+with tf.Session() as session:
+    result = session.run(Scalar)
+    print "Scalar (1 entry):\n %s \n" % result
+    result = session.run(Vector)
+    print "Vector (3 entries) :\n %s \n" % result
+    result = session.run(Matrix)
+    print "Matrix (3x3 entries):\n %s \n" % result
+    result = session.run(Tensor)
+    print "Tensor (3x3x3 entries) :\n %s \n" % result
+
+Results would be : 
+
+Scalar (1 entry):
+ [2] 
+
+Vector (3 entries) :
+ [5 6 2] 
+
+Matrix (3x3 entries):
+ [[1 2 3]
+ [2 3 4]
+ [3 4 5]] 
+
+Tensor (3x3x3 entries) :
+ [[[ 1  2  3]
+  [ 2  3  4]
+  [ 3  4  5]]
+
+ [[ 4  5  6]
+  [ 5  6  7]
+  [ 6  7  8]]
+
+ [[ 7  8  9]
+  [ 8  9 10]
+  [ 9 10 11]]] 
+    
 
 
 # to add code by eod
