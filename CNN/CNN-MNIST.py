@@ -1,343 +1,5 @@
 
-# coding: utf-8
-
-# <a href="https://www.bigdatauniversity.com"><img src = "https://ibm.box.com/shared/static/jvcqp2iy2jlx2b32rmzdt0tx8lvxgzkp.png" width = 300, align = "center"></a>
-# <h1 align=center><font size = 5>CONVOLUTIONAL NEURAL NETWORK APPLICATION</font></h1>
-
-# ## Introduction
-
-# In this section, we will use the famous [MNIST Dataset](http://yann.lecun.com/exdb/mnist/) to build two Neural Networks capable to perform handwritten digits classification. The first Network is a simple Multi-layer Perceptron (MLP) and the second one is a Convolutional Neural Network (CNN from now on). In other words, our algorithm will say, with some associated error, what type of digit is the presented input.
-# 
-# The subject will be covered using __Jupyter Notebook__ to write an interactive Python code and __TensorFlow__ to build and run the Artificial Neural Networks.
-# 
-# This lesson is not intended to be a reference for _machine learning,convolutions or TensorFlow_. The intention is to give notions to the user about these fields and awareness of Data Scientist Workbench capabilities. We recommend that the students search for further references to understand completely the mathematical and theoretical concepts involved.
-# 
-# ### Audience
-# 
-# Data scientists. General public related to computer science and machine learning.
-# 
-# This tutorial is intended for readers interested on TensorFlow and in need of a cloud platform like Workbench Data Scientist. 
-# 
-# ### Pre-requisites:
-# 
-# Basic knowledge of linear algebra, Python, Neural Networks and MNIST dataset.
-
-# ---
-
-# ## Table of contents
-# 
-# <div class="alert alert-block alert-info" style="margin-top: 20px">
-# <font size = 3><strong>Clik on the links to see the sections:</strong></font>
-# <br>
-# - <p><a href="#ref1">What is Deep Learning</a></p>
-# - <p><a href="#ref2">Simple test: Is tensorflow working?</a></p>
-# - <p><a href="#ref3">1st part: classify MNIST using a simple model</a></p>
-# - <p><a href="#ref4">Evaluating the final result</a></p>
-# - <p><a href="#ref5">How to improve our model?</a></p>
-# - <p><a href="#ref6">2nd part: Deep Learning applied on MNIST</a></p>
-# - <p><a href="#ref7">Summary of the Deep Convolutional Neural Network</a></p>
-# - <p><a href="#ref8">Define functions and train the model</a></p>
-# - <p><a href="#ref9">Evaluate the model</a></p>
-
-# ---
-
-# <a id="ref1"></a>
-# # What is Deep Learning?
-
-# **Brief Theory:** Deep learning (also known as deep structured learning, hierarchical learning or deep machine learning) is a branch of machine learning based on a set of algorithms that attempt to model high-level abstractions in data by using multiple processing layers, with complex structures or otherwise, composed of multiple non-linear transformations.
-
-# <img src="https://ibm.box.com/shared/static/gcbbrh440604cj2nksu3f44be87b8ank.png" alt="HTML5 Icon" style="width:600px;height:450px;">
-# <div style="text-align:center">It's time for deep learning. Our brain does't work with one or three layers. Why it would be different with machines?. </div>
-
-# **In Practice, defining the term "Deep":** in this context, deep means that we are studying a Neural Network which has several hidden layers (more than one), no matter what type (convolutional, pooling, normalization, fully-connected etc). The most interesting part is that some papers noticed that Deep Neural Networks with right architectures/hyper-parameters achieve better results than shallow Neural Networks with same computational power (e.g. number of neurons or connections). 
-
-# **In Practice, defining "Learning":** In the context of supervised learning, digits recognition in our case,  the learning consists of a target/feature which is to be predicted using a given set of observations with the already known final prediction (label). In our case, the target will be the digit (0,1,2,3,4,5,6,7,8,9) and the observations are the intensity and relative position of pixels. After some training, it's possible to generate a "function" that map inputs (digit image) to desired outputs(type of digit). The only problem is how well this map operation occurs. While trying to generate this "function", the training process continues until the model achieves a desired level of accuracy on the training data.
-
-# ---
-
-# In this tutorial, we first classify MNIST using a simple Multi-layer percepetron and then, in the second part, we use deeplearning to improve the accuracy of our results.
-# 
-# <a id="ref3"></a>
-# # 1st part: classify MNIST using a simple model.
-
-# We are going to create a simple Multi-layer percepetron, a simple type of Neural Network, to performe classification tasks on the MNIST digits dataset. If you are not familiar with the MNIST dataset, please consider to read more about it: <a href="http://yann.lecun.com/exdb/mnist/">click here</a> 
-
-# ### What is MNIST?
-
-# According to Lecun's website, the MNIST is a: "database of handwritten digits that has a training set of 60,000 examples, and a test set of 10,000 examples. It is a subset of a larger set available from NIST. The digits have been size-normalized and centered in a fixed-size image".
-
-# ### Import the MNIST dataset using TensorFlow built-in feature
-
-# It's very important to notice that MNIST is a high optimized data-set and it does not contain images. You will need to build your own code if you want to see the real digits. Another important side note is the effort that the authors invested on this data-set with normalization and centering operations.  
-
-# In[ ]:
-
 import tensorflow as tf
-from tensorflow.examples.tutorials.mnist import input_data
-mnist = input_data.read_data_sets('MNIST_data', one_hot=True)
-
-
-# The <span style="background-color:#dcdcdc
-# "> One-hot = True</span> argument only means that, in contrast to Binary representation, the labels will be presented in a way that only one bit will be on for a specific digit. For example, five and zero in a binary code would be:
-
-# <pre>
-# Number representation:    0
-# Binary encoding:        [2^5]  [2^4]   [2^3]   [2^2]   [2^1]   [2^0]  
-# Array/vector:             0      0       0       0       0       0 
-# 
-# Number representation:    5
-# Binary encoding:        [2^5]  [2^4]   [2^3]   [2^2]   [2^1]   [2^0]  
-# Array/vector:             0      0       0       1       0       1  
-# </pre>
-
-# Using a different notation, the same digits using one-hot vector representation can be show as: 
-
-# <pre>
-# Number representation:    0
-# One-hot encoding:        [5]   [4]    [3]    [2]    [1]   [0]  
-# Array/vector:             0     0      0      0      0     1   
-# 
-# Number representation:    5
-# One-hot encoding:        [5]   [4]    [3]    [2]    [1]    [0]  
-# Array/vector:             1     0      0      0      0      0   
-# </pre>
-
-# ### Understanding the imported data
-
-# The imported data can be divided as follow:
-# 
-# - Training (mnist.train) >>  Use the given dataset with inputs and related outputs for training of NN. In our case, if you give an image that you know that represents a "nine", this set will tell the neural network that we expect a "nine" as the output.  
-#         - 55,000 data points
-#         - mnist.train.images for inputs
-#         - mnist.train.labels for outputs
-#   
-#    
-# - Validation (mnist.validation) >> The same as training, but now the date is used to generate model properties (classification error, for example) and from this, tune parameters like the optimal number of hidden units or determine a stopping point for the back-propagation algorithm  
-#         - 5,000 data points
-#         - mnist.validation.images for inputs
-#         - mnist.validation.labels for outputs
-#   
-#   
-# - Test (mnist.test) >> the model does not have access to this informations prior to the test phase. It is used to evaluate the performance and accuracy of the model against "real life situations". No further optimization beyond this point.  
-#         - 10,000 data points
-#         - mnist.test.images for inputs
-#         - mnist.test.labels for outputs
-#   
-
-# ### Creating an interactive section
-
-# You have two basic options when using TensorFlow to run your code:
-# 
-# - [Build graphs and run session] Do all the set-up and THEN execute a session to evaluate tensors and run operations (ops) 
-# - [Interactive session] create your coding and run on the fly. 
-# 
-# For this first part, we will use the interactive session that is more suitable for environments like Jupyter notebooks.
-
-# In[ ]:
-
-sess = tf.InteractiveSession()
-
-
-# ### Creating placeholders
-
-# It's a best practice to create placeholders before variable assignments when using TensorFlow. Here we'll create placeholders for inputs ("Xs") and outputs ("Ys").   
-# 
-# __Placeholder 'X':__ represents the "space" allocated input or the images. 
-#        * Each input has 784 pixels distributed by a 28 width x 28 height matrix   
-#        * The 'shape' argument defines the tensor size by its dimensions.  
-#        * 1st dimension = None. Indicates that the batch size, can be of any size.  
-#        * 2nd dimension = 784. Indicates the number of pixels on a single flattened MNIST image.  
-#       
-# __Placeholder 'Y':___ represents the final output or the labels.  
-#        * 10 possible classes (0,1,2,3,4,5,6,7,8,9)  
-#        * The 'shape' argument defines the tensor size by its dimensions.  
-#        * 1st dimension = None. Indicates that the batch size, can be of any size.   
-#        * 2nd dimension = 10. Indicates the number of targets/outcomes 
-# 
-# __dtype for both placeholders:__ if you not sure, use tf.float32. The limitation here is that the later presented softmax function only accepts float32 or float64 dtypes. For more dtypes, check TensorFlow's documentation <a href="https://www.tensorflow.org/versions/r0.9/api_docs/python/framework.html#tensor-types">here</a>
-# 
-
-# In[ ]:
-
-x  = tf.placeholder(tf.float32, shape=[None, 784])
-y_ = tf.placeholder(tf.float32, shape=[None, 10])
-
-
-# ### Assigning bias and weights to null tensors
-
-# Now we are going to create the weights and biases, for this purpose they will be used as arrays filled with zeros. The values that we choose here can be critical, but we'll cover a better way on the second part, instead of this type of initialization.
-
-# In[ ]:
-
-# Weight tensor
-W = tf.Variable(tf.zeros([784,10],tf.float32))
-# Bias tensor
-b = tf.Variable(tf.zeros([10],tf.float32))
-
-
-# ### Execute the assignment operation 
-
-# Before, we assigned the weights and biases but we did not initialize them with null values. For this reason, TensorFlow need to initialize the variables that you assign.  
-# Please notice that we're using this notation "sess.run" because we previously started an interactive session.
-
-# In[ ]:
-
-# run the op initialize_all_variables using an interactive session
-sess.run(tf.initialize_all_variables())
-
-
-# ### Adding Weights and Biases to input
-
-# The only difference from our next operation to the picture below is that we are using the mathematical convention for what is being executed in the illustration. The tf.matmul operation performs a matrix multiplication between x (inputs) and W (weights) and after the code add biases.
-
-# 
-# <img src="https://ibm.box.com/shared/static/88ksiymk1xkb10rgk0jwr3jw814jbfxo.png" alt="HTML5 Icon" style="width:400px;height:350px;"> 
-# <div style="text-align:center">Illustration showing how weights and biases are added to neurons/nodes. </div>
-# 
-
-# In[ ]:
-
-#mathematical operation to add weights and biases to the inputs
-tf.matmul(x,W) + b
-
-
-# ### Softmax Regression
-
-# Softmax is an activation function that is normally used in classification problems. It generate the probabilities for the output. For example, our model will not be 100% sure that one digit is the number nine, instead, the answer will be a distribution of probabilities where, if the model is right, the nine number will have the larger probability.
-# 
-# For comparison, below is the one-hot vector for a nine digit label:
-0 --> 0  
-1 --> 0 
-2 --> 0
-3 --> 0
-4 --> 0
-5 --> 0
-6 --> 0
-7 --> 0
-8 --> 0
-9 --> 1
-# A machine does not have all this certainty, so we want to know what is the best guess, but we also want to understand how sure it was and what was the second better option. Below is an example of a hypothetical distribution for a nine digit:
-0 -->.0.1%  
-1 -->...2%  
-2 -->...3%  
-3 -->...2%  
-4 -->..12%  
-5 -->..10%  
-6 -->..57%
-7 -->..20%
-8 -->..55%
-9 -->..80%  
-# In[ ]:
-
-y = tf.nn.softmax(tf.matmul(x,W) + b)
-
-
-# Logistic function output is used for the classification between two target classes 0/1. Softmax function is generalized type of logistic function. That is, Softmax can output a multiclass categorical probability distribution. 
-
-# ### Cost function
-
-# It is a function that is used to minimize the difference between the right answers (labels) and estimated outputs by our Network. 
-
-# In[ ]:
-
-cross_entropy = tf.reduce_mean(-tf.reduce_sum(y_ * tf.log(y), reduction_indices=[1]))
-
-
-# ### Type of optimization: Gradient Descent
-
-# This is the part where you configure the optimizer for you Neural Network. There are several optimizers available, in our case we will use Gradient Descent that is very well stablished.
-
-# In[ ]:
-
-train_step = tf.train.GradientDescentOptimizer(0.5).minimize(cross_entropy)
-
-
-# ### Training batches
-
-# Train using minibatch Gradient Descent.
-# 
-# In practice, Batch Gradient Descent is not often used because is too computationally expensive. The good part about this method is that you have the true gradient, but with the expensive computing task of using the whole dataset in one time. Due to this problem, Neural Networks usually use minibatch to train.
-
-# In[ ]:
-
-#Load 50 training examples for each training iteration   
-for i in range(1000):
-    batch = mnist.train.next_batch(50)
-    train_step.run(feed_dict={x: batch[0], y_: batch[1]})
-
-
-# ### Test
-
-# In[ ]:
-
-correct_prediction = tf.equal(tf.argmax(y,1), tf.argmax(y_,1))
-accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
-acc = accuracy.eval(feed_dict={x: mnist.test.images, y_: mnist.test.labels}) * 100
-print("The final accuracy for the simple ANN model is: {} % ".format(acc) )
-
-
-# In[ ]:
-
-sess.close() #finish the session
-
-
-# ---
-
-# <a id="ref4"></a>
-# # Evaluating the final result
-
-# Is the final result good?
-# 
-# Let's check the best algorithm available out there (10th june 2016):
-#   
-# _Result:_ 0.21% error (99.79% accuracy)  
-# <a href="http://cs.nyu.edu/~wanli/dropc/">Reference here</a>
-
-# <a id="ref5"></a>
-# # How to improve our model?
-
-# #### Several options as follow:
-# - Regularization of Neural Networks using DropConnect
-# - Multi-column Deep Neural Networks for Image Classiﬁcation 
-# - APAC: Augmented Pattern Classification with Neural Networks
-# - Simple Deep Neural Network with Dropout
-# 
-# #### In the next part we are going to explore the option:
-# - Simple Deep Neural Network with Dropout (more than 1 hidden layer)
-
-# ---
-
-# <a id="ref6"></a>
-# # 2nd part: Deep Learning applied on MNIST
-
-# In the first part, we learned how to use a simple ANN to classify MNIST. Now we are going to expand our knowledge using a Deep Neural Network. 
-# 
-# 
-# Architecture of our network is:
-#     
-# - (Input) -> [batch_size, 28, 28, 1]  >> Apply 32 filter of [5x5]
-# - (Convolutional layer 1)  -> [batch_size, 28, 28, 32]
-# - (ReLU 1)  -> [?, 28, 28, 32]
-# - (Max pooling 1) -> [?, 14, 14, 32]
-# - (Convolutional layer 2)  -> [?, 14, 14, 64] 
-# - (ReLU 2)  -> [?, 14, 14, 64] 
-# - (Max pooling 2)  -> [?, 7, 7, 64] 
-# - [fully connected layer 3] -> [1x1024]
-# - [ReLU 3]  -> [1x1024]
-# - [Drop out]  -> [1x1024]
-# - [fully connected layer 4] -> [1x10]
-# 
-# 
-# The next cells will explore this new architecture.
-
-# ### Starting the code
-
-# In[2]:
-
-import tensorflow as tf
-
-# finish possible remaining session
-#sess.close()
 
 #Start interactive session
 sess = tf.InteractiveSession()
@@ -402,7 +64,6 @@ W_conv1 = tf.Variable(tf.truncated_normal([5, 5, 1, 32], stddev=0.1))
 b_conv1 = tf.Variable(tf.constant(0.1, shape=[32])) # need 32 biases for 32 outputs
 
 
-# <img src="https://ibm.box.com/shared/static/f4touwscxlis8f2bqjqg4u5zxftnyntc.png" style="width:800px;height:400px;" alt="HTML5 Icon" >
 # 
 # #### Convolve with weight tensor and add biases.
 # 
@@ -427,8 +88,6 @@ b_conv1 = tf.Variable(tf.constant(0.1, shape=[32])) # need 32 biases for 32 outp
 convolve1= tf.nn.conv2d(x_image, W_conv1, strides=[1, 1, 1, 1], padding='SAME') + b_conv1
 
 
-# <img src="https://ibm.box.com/shared/static/brosafd4eaii7sggpbeqwj9qmnk96hmx.png" style="width:800px;height:400px;" alt="HTML5 Icon" >
-# 
 
 # #### Apply the ReLU activation Function
 
@@ -449,7 +108,6 @@ h_conv1 = tf.nn.relu(convolve1)
 # __Strides:__ dictates the sliding behaviour of the kernel. In this case it will move 2 pixels everytime, thus not overlapping.
 # 
 # 
-# <img src="https://ibm.box.com/shared/static/awyoq0e2r3hfx3n7xrvhw4y7gly683p4.png" alt="HTML5 Icon" style="width:800px;height:400px;"> 
 # 
 # 
 
@@ -519,7 +177,6 @@ layer2= h_pool2
 # So, each matrix [7x7] will be converted to a matrix of [49x1], and then all of the 64 matrix will be connected, which make an array of size [3136x1]. We will connect it into another layer of size [1024x1]. So, the weight between these 2 layers will be [3136x1024]
 # 
 # 
-# <img src="https://ibm.box.com/shared/static/hvbegd0lfr1maxpq2gpq3g8ibvk8d2eo.png" alt="HTML5 Icon" style="width:800px;height:400px;"> 
 # 
 
 # #### Flattening Second Layer
@@ -614,13 +271,9 @@ layer4= y_conv
 
 layer4
 
-
-# ---
-
-# <a id="ref7"></a>
 # # Summary of the Deep Convolutional Neural Network
 
-# Now is time to remember the structure of  our network
+# So, the basic the structure of  our network
 
 # #### 0) Input - MNIST dataset
 # #### 1) Convolutional and Max-Pooling
@@ -632,7 +285,6 @@ layer4
 
 # ---
 
-# <a id="ref8"></a>
 # # Define functions and train the model
 
 # #### Define the loss function
@@ -783,10 +435,6 @@ for i in range(filters):
 
 sess.close() #finish the session
 
-
-# ### Thanks for completing this lesson!
-
-# Created by <a href = "https://linkedin.com/in/luisotsm">Luis Otavio Silveira Martins</a>, <a href = "https://linkedin.com/in/erich-natsubori-sato"> Erich Natsubori Sato </a>, <a href = "https://linkedin.com/in/saeedaghabozorgi"> Saeed Aghabozorgi </a></h4>
 
 # ### References:
 # 
