@@ -5,6 +5,20 @@
 #Make sure you have first gone through the ANN model on MNIST Data before starting with CNN.
 #Make sure you have good understanding of how kernels work too.
 
+_______________________
+Structure :
+0) Input - MNIST datas
+1) Convolutional and Max-Pooling
+2) Convolutional and Max-Pooling
+3) Fully Connected Layer
+4) Processing - Dropout 
+5) Readout layer - Fully Connected
+6) Outputs - Classified digits
+_________________________
+
+
+
+
 import tensorflow as tf
 
 # finish possible remaining sessions
@@ -99,4 +113,8 @@ Strides: dictates the sliding behaviour of the kernel. In this case it will move
         layer1= h_pool1
         
         #End of Layer 1.
+        
+        
+        
+        
 
