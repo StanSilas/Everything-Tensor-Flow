@@ -1,0 +1,16 @@
+Simple convolutions using Numpy
+
+import numpy as np
+
+a = [1,2,3]
+b= [3,4,5]
+c= np.convolve(a,b, "full")
+c
+
+d= np.convolve(a,b, "valid")
+d
+
+e= np.convolve(a,b, "SAME")
+e
+
+
