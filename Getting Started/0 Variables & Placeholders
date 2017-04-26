@@ -2,7 +2,9 @@ For working with variables in TensorFlow, we have to use tf.variable()
 
 The key thing to remember is that one has initialize all the variables by running 
       
-      tf.initialize_all_variables()
+      `tf.global_variables_initializer()` 
+
+# this is deprecated -------->      tf.initialize_all_variables()
       
 before using the variables in a computational graph.
 
