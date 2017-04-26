@@ -1,1 +1,7 @@
 #Logistic Regression
+
+#Logistic Regression in TF has three parts :
+
+1. Wieghts matrix multiplication       tf.matmul(Val, weights)
+2. Biases Addition                      tf.add(weightedVals)
+3. Pass results of 2 to an activation function, say sigmoid function.           tf.nn.sigmoid(weighted Vals with Biases)
