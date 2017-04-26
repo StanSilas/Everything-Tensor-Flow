@@ -1,0 +1,15 @@
+# RELU 
+
+Rectified Linear Units bring together the best of both worlds from Sigmoid and Step functions.
+
+ReLU's 
+
+x : if x>0
+0 : if x<0
+
+They solve the vanishing gradient and the exploding gradient problems.
+
+
+tanh, sigmoid (1/(1+ e^-x)) , and relu are supported by TensorFlow
+
+What sigmoid does is, compress the results to either a 0 or 1, so that this output can be fed to the next thing.
